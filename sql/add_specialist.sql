@@ -1,0 +1,1 @@
+INSERT INTO specialists (full_name, available_start, available_end) VALUES (?, ?, ?)

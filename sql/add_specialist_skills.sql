@@ -1,0 +1,1 @@
+INSERT INTO specialist_skills (specialist_id, skill_id) VALUES ?

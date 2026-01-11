@@ -1,0 +1,1 @@
+SELECT * FROM interviews WHERE specialist_id = ? ORDER BY interview_time

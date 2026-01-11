@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <script src="app.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Manager System - Технические собеседования</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+
+<body>
+    <header>
+        <p class="subtitle"><i class="fas fa-users-cog"></i> Управление техническими собеседованиями</p>
+    </header>
+
+    <div class="container">
+        <div class="main-content">
+            <!-- Боковая панель -->
+            <aside class="sidebar">
+                <div class="sidebar-section">
+                    <h3><i class="fas fa-cog"></i> Управление</h3>
+                    <ul class="nav-menu">
+                        <li class="active" data-tab="specialists"><i class="fas fa-user-tie"></i> Специалисты</li>
+                        <li data-tab="interviews"><i class="fas fa-calendar-check"></i> Собеседования</li>
+                        <li data-tab="skills"><i class="fas fa-tools"></i> Навыки</li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3><i class="fas fa-info-circle"></i> Информация</h3>
+                    <div class="info-box">
+                        <p><strong>Длительность собеседования:</strong> 1 час 30 минут</p>
+                        <p><strong>Минимальное совпадение навыков:</strong> 80%</p>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Основной контент -->
+            <main class="content-area">
+                <!-- Вкладка Специалисты -->
+                <section id="specialists" class="tab-content active">
+                    <div class="section-header">
+                        <h2><i class="fas fa-user-tie"></i> Управление специалистами</h2>
+                        <button class="btn btn-primary" id="addSpecialistBtn">
+                            <i class="fas fa-plus"></i> Добавить специалиста
+                        </button>
+                    </div>
+
+                    <div class="filters">
+                        <input type="text" id="specialistSearch" placeholder="Поиск по ФИО...">
+                        <select id="specialistSkillFilter">
+                            <option value="">Все навыки</option>
+                        </select>
+                    </div>
+
+                    <div class="table-container">
+                        <table id="specialistsTable">
+                            <thead>
+                                <tr>
+                                    <th>ФИО</th>
+                                    <th>ID</th>
+                                    <th>Доступен</th>
+                                    <th>Навыки</th>
+                                    <th>Собеседования</th>
+                                    <th>Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody id="specialistsTableBody">
+                                <!-- Данные будут загружены через JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Вкладка Собеседования -->
+                <section id="interviews" class="tab-content">
+                    <div class="section-header">
+                        <h2><i class="fas fa-calendar-check"></i> Управление собеседованиями</h2>
+                        <button class="btn btn-primary" id="addInterviewBtn">
+                            <i class="fas fa-plus"></i> Назначить собеседование
+                        </button>
+                    </div>
+
+                    <div class="filters">
+                        <input type="text" id="interviewSearch" placeholder="Поиск по соискателю...">
+                        <select id="interviewSpecialistFilter">
+                            <option value="">Все специалисты</option>
+                        </select>
+                    </div>
+
+                    <div class="table-container">
+                        <table id="interviewsTable">
+                            <thead>
+                                <tr>
+                                    <th>Соискатель</th>
+                                    <th>ID</th>
+                                    <th>Время</th>
+                                    <th>Специалист</th>
+                                    <th>Навыки</th>
+                                    <th>Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody id="interviewsTableBody">
+                                <!-- Данные будут загружены через JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Вкладка Навыки -->
+                <section id="skills" class="tab-content">
+                    <div class="section-header">
+                        <h2><i class="fas fa-tools"></i> Управление навыками</h2>
+                        <div class="add-skill-form">
+                            <input type="text" id="newSkillInput" placeholder="Новый навык">
+                            <button class="btn btn-primary" id="addSkillBtn">
+                                <i class="fas fa-plus"></i> Добавить
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="skills-grid" id="skillsContainer">
+                        <!-- Навыки будут загружены через JavaScript -->
+                    </div>
+                </section>
+            </main>
+        </div>
+
+    </div>
+
+
+    <template id="modal-window">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"></h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+            </div>
+        </div>
+    </template>
+
+
+
+    <template id="add-specialist-modal">
+        <div class="form-inputs">
+            <div class="form-group">
+                <label for="specialist-fullname">ФИО *</label>
+                <input type="text" id="specialist-fullname" required>
+            </div>
+
+            <div class="form-group">
+                <label>Доступность специалиста</label>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="specialist-start-time">Начало*</label>
+                    <input type="time" id="specialist-start-time" required>
+                </div>
+                <div class="form-group">
+                    <label for="specialist-end-time">Конец*</label>
+                    <input type="time" id="specialist-end-time" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="specialist-skills">Навыки (выберите несколько, удерживая Ctrl)</label>
+                <select id="specialist-skills" multiple>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" class="btn btn-danger cancel-btn">Отмена</button>
+            <button type="submit" class="btn btn-success">Добавить</button>
+        </div>
+    </template>
+
+
+
+    <template id="add-interview-modal">
+        <div class="form-inputs">
+            <div class="form-group">
+                <label for="interview-candidate-name">ФИО соискателя *</label>
+                <input type="text" id="interview-candidate-name" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="interview-time">Время начала*</label>
+                    <input type="time" id="interview-time" required>
+                </div>
+                <div class="form-group">
+                    <label for="interview-end">Время окончания*</label>
+                    <input type="time" id="interview-end" required disabled>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="interview-specialist">Специалист *</label>
+                <select id="interview-specialist" required>
+                    <option value="">Выберите специалиста</option>
+                    ${specialists.map(s => `<option value="${s.id}">${s.full_name}</option>`).join('')}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="interview-skills">Навыки соискателя (выберите несколько, удерживая Ctrl)</label>
+                <select id="interview-skills" multiple>
+                    ${skills.map(skill => `<option value="${skill.id}">${skill.name}</option>`).join('')}
+                </select>
+            </div>
+
+            <div class="info-box">
+                <p><strong>Примечание:</strong> Система проверит:</p>
+                <ul>
+                    <li>Доступность специалиста в указанное время</li>
+                    <li>Соответствие навыков (минимум 80% совпадения)</li>
+                    <li>Отсутствие пересечений по времени с другими собеседованиями</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" class="btn btn-danger cancel-btn">Отмена</button>
+            <button type="submit" class="btn btn-success">Назначить</button>
+        </div>
+    </template>
+
+
+    <template id="edit-specialist-modal">
+        <div class="form-inputs">
+            <div class="form-group">
+                <label for="edit-specialist-fullname">ФИО *</label>
+                <input type="text" id="edit-specialist-fullname" required>
+            </div>
+
+            <div class="form-group">
+                <label>Доступность специалиста</label>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="edit-specialist-start-time">Начало*</label>
+                    <input type="time" id="edit-specialist-start-time" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-specialist-end-time">Конец*</label>
+                    <input type="time" id="edit-specialist-end-time" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="edit-specialist-skills">Навыки (выберите несколько, удерживая Ctrl)</label>
+                <select id="edit-specialist-skills" multiple>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" class="btn btn-danger cancel-btn">Отмена</button>
+            <button type="submit" class="btn btn-success">Сохранить</button>
+        </div>
+    </template>
+
+
+    <template id="interview-edit-modal">
+        <div class="form-inputs">
+
+            <div class="form-group">
+                <label>Соискатель</label>
+                <input type="text" id="interview-candidate-name" disabled>
+            </div>
+
+            <div class="form-group">
+                <label for="new-specialist">Новый специалист</label>
+                <select id="new-specialist" required>
+                </select>
+            </div>
+
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="interview-time">Новое начало*</label>
+                    <input type="time" id="interview-time" required>
+                </div>
+                <div class="form-group">
+                    <label for="interview-end">Новое окончание*</label>
+                    <input type="time" id="interview-end" disabled>
+                </div>
+            </div>
+
+
+
+            <div class="info-box">
+                <p><strong>Примечание:</strong> Система проверит:</p>
+                <ul>
+                    <li>Доступность нового специалиста в указанное время</li>
+                    <li>Соответствие навыков (минимум 80% совпадения)</li>
+                    <li>Отсутствие пересечений по времени с другими собеседованиями специалиста</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" class="btn btn-danger cancel-btn">Отмена</button>
+            <button type="submit" class="btn btn-success">Перенести</button>
+        </div>
+
+    </template>
+
+    <template id="specialist-interviews">
+        <div class="specialist-interviews-body">
+            <div class="specialist-info">
+                <p><strong>Доступен:</strong> ${specialist.available_start.substring(0, 5)} -
+                    ${specialist.available_end.substring(0, 5)}</p>
+            </div>
+
+            <h3>Назначенные собеседования</h3>
+            <div class="interviews-list">
+                ${interviewsHtml}
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" class="btn btn-primary cancel-btn">Закрыть</button>
+        </div>
+    </template>
+
+    <template id="interviews-row">
+        <td><strong>${interview.candidate_name}</strong></td>
+        <td><code>${interview.id}</code></td>
+        <td>${interviewTime}</td>
+        <td>${interview.specialist_name || 'Не назначен'}</td>
+        <td>${skillsHtml}</td>
+        <td>
+            <button class="btn btn-sm btn-primary transfer-interview-btn" data-id="${interview.id}">
+                <i class="fas fa-exchange-alt"></i>
+            </button>
+            <button class="btn btn-sm btn-danger delete-interview-btn" data-id="${interview.id}">
+                <i class="fas fa-trash"></i>
+            </button>
+        </td>
+    </template>
+
+    <template id="confirm-modal">
+        <p id="confirm-message"></p>
+        <div class="form-actions">
+            <button type="button" class="btn btn-danger cancel-btn">Отмена</button>
+            <button type="submit" class="btn btn-success">Подтвердить</button>
+        </div>
+    </template>
+
+</body>
+
+</html>

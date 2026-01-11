@@ -1,0 +1,1 @@
+SELECT * FROM specialists WHERE id = ?

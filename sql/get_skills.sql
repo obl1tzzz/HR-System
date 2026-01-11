@@ -1,0 +1,1 @@
+SELECT * FROM skills ORDER BY name
