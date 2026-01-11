@@ -50,7 +50,7 @@
 
 ## Начало работы
 ### Поднятие базы данных
-В директории sql лежит sql-запрос create_database.sql, который поднимает базу данных.
+В директории server/sql лежит sql-запрос create_database.sql, который поднимает базу данных.
 Также можно взять код напрямую отсюда:
 ```sql
 -- Создание базы данных
@@ -116,4 +116,14 @@ INSERT IGNORE INTO skills (name) VALUES
   ('SQL'), 
   ('Docker'), 
   ('Git');
+```
+### Установка зависимостей
+```bash
+cd ./server
+npm install
+```
+
+### Запуск сервера
+```bash
+node server.js
 ```
